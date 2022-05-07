@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql.init:
+    mode: never
+    enabled: true
+    schema-locations: classpath:schema.sql
+    encoding: utf-8
+server.port: 5000
+

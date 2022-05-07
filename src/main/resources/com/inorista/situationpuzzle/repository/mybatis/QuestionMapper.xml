@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inorista.situationpuzzle.repository.mybatis.QuestionMapper">
+
+    <resultMap id="User" type="com.inorista.situationpuzzle.domain.User">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <resultMap id="Question" type="com.inorista.situationpuzzle.domain.Question">
+        <id property="questionId" column="question_id"/>
+        <result property="statement" column="statement"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="isAnswered" column="answered"/>
+        <result property="answer" column="answer"/>
+        <result property="createdAt" column="created_at"/>
+        <association property="author" resultMap="User"/>
+    </resultMap>
+
+    <resultMap id="Clarification" type="com.inorista.situationpuzzle.domain.Clarification">
+        <id property="clarificationId" column="clarification_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="state" column="state"/>
+        <result property="content" column="content"/>
+        <association property="author" resultMap="User"/>
+    </resultMap>
+
+    <resultMap id="Guess" type="com.inorista.situationpuzzle.domain.Guess">
+        <id property="guessId" column="guess_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="isAnswered" column="is_answered"/>
+        <result property="isCorrect" column="is_correct"/>
+        <association property="author" resultMap="User"/>
+    </resultMap>
+
+    <select id="findQuestion" resultMap="Question">
+        SELECT question_id, statement, answered, answer,
+               q.message_id as message_id, channel_id, created_at,
+               user_id, user_name
+        FROM question q
+          INNER JOIN message m USING(message_id)
+          INNER JOIN participant u ON m.author_id = u.user_id
+        <where>
+            <if test="channelId != null">
+                m.channel_id = #{channelId}
+            </if>
+            <if test="questionId > 0">
+                AND q.question_id = #{questionId}
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findUser" resultMap="User">
+        SELECT user_id, user_name FROM participant
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO participant(user_id, user_name)
+          VALUES(#{userId}, #{userName})
+    </insert>
+
+    <insert id="insertMessage">
+        INSERT INTO message(message_id, channel_id, author_id, created_at)
+          VALUES(#{messageId}, #{channelId}, #{authorId}, #{createdAt})
+    </insert>
+
+    <insert id="insertQuestion">
+        INSERT INTO question(message_id, statement)
+          VALUES (#{messageId}, #{statement})
+    </insert>
+
+    <insert id="insertClarification">
+        INSERT INTO clarification
+          (question_id, message_id, content, state)
+          VALUES (#{questionId}, #{messageId}, #{content}, #{state})
+    </insert>
+
+    <select id="findClarification" resultMap="Clarification">
+        SELECT question_id, clarification_id, channel_id, m.message_id as message_id,
+               content, state, user_name, m.author_id as user_id, created_at
+        FROM clarification
+          INNER JOIN message m USING(message_id)
+          INNER JOIN participant u ON m.author_id = u.user_id
+        <where>
+            <if test="messageId != null">
+                m.message_id = #{messageId}
+            </if>
+            <if test="clarificationId > 0">
+                AND clarification_id = #{clarificationId}
+            </if>
+            <if test="questionId > 0">
+                AND question_id = #{questionId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateClarificationState">
+        UPDATE clarification
+          SET state = #{state}
+          WHERE clarification_id = #{clarificationId}
+    </update>
+
+    <update id="updateQuestionState">
+        UPDATE question
+          SET answered = #{answered}
+          WHERE question_id = #{questionId}
+    </update>
+
+    <insert id="insertGuess">
+        INSERT INTO guess
+          (guess_id, question_id, message_id, content)
+          VALUES(#{guessId}, #{questionId}, #{messageId}, #{content})
+    </insert>
+
+    <select id="findGuess" resultMap="Guess">
+        SELECT content, is_correct, is_answered, guess_id, question_id,
+               m.message_id as message_id, channel_id, created_at, user_id, user_name
+        FROM guess
+          INNER JOIN message m USING(message_id)
+          INNER JOIN participant u ON m.author_id = u.user_id
+        <where>
+            <if test="guessId > 0">
+                guess_id = #{guessId}
+            </if>
+            <if test="messageId != null">
+                AND m.message_id = #{messageId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateGuess">
+        UPDATE guess SET
+          is_answered = TRUE,
+          is_correct = #{isCorrect}
+        WHERE guess_id = #{guessId}
+    </update>
+
+</mapper>
