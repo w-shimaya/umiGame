@@ -1,3 +1,5 @@
+ALTER DATABASE umigamedb CHARACTER SET utf8mb4;
+
 SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS participant;
 DROP TABLE IF EXISTS message;
