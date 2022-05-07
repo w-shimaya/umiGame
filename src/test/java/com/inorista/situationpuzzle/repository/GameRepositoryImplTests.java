@@ -23,12 +23,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 @SpringBootTest
+@ActiveProfiles({"test"})
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class
