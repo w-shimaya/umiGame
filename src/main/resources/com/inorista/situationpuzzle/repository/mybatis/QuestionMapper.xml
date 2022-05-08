@@ -141,6 +141,9 @@
             <if test="messageId != null">
                 AND m.message_id = #{messageId}
             </if>
+            <if test="questionId > 0">
+                AND guess.question_id = #{questionId}
+            </if>
         </where>
     </select>
 
