@@ -8,6 +8,7 @@ import com.inorista.situationpuzzle.domain.Guess;
 import com.inorista.situationpuzzle.domain.GuessSelector;
 import com.inorista.situationpuzzle.domain.MessageCache;
 import com.inorista.situationpuzzle.domain.Question;
+import com.inorista.situationpuzzle.domain.QuestionSelector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,11 @@ public class GameRepositoryMock implements GameRepository {
     @Override
     public List<Question> getAllQuestions() {
         return this.questions;
+    }
+
+    @Override
+    public List<Question> findQuestion(QuestionSelector selector) {
+        return null;
     }
 
     @Override

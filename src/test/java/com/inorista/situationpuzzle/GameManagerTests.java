@@ -125,21 +125,29 @@ class GameManagerTests {
 
         @Test
         void testAnswerClarification() {
-            int clarificationId = 1;
+            int clarificationId = 10;
+            int questionId = 1;
+            Snowflake userId = Snowflake.of(20);
             Snowflake messageId = Snowflake.of(10);
             ClarificationState answer = ClarificationState.YES;
             Clarification clarification = new Clarification();
             clarification.setClarificationId(clarificationId);
             clarification.setMessageId(messageId.asString());
             clarification.setState(ClarificationState.AWAIT);
+            Question question = new Question.Builder()
+                    .questionId(questionId)
+                    .authorId(userId.asString())
+                    .build();
 
+            Mockito.doReturn(List.of(question)).when(gameRepository)
+                    .findQuestion(ArgumentMatchers.any());
             Mockito.doReturn(List.of(clarification)).when(gameRepository)
                     .findClarification(ArgumentMatchers.any());
             Mockito.doReturn(1).when(gameRepository)
                     .updateClarificationState(clarificationId, answer);
             GameManager manager = new GameManager(gameRepository);
 
-            manager.answerClarification(messageId, answer);
+            manager.answerClarification(messageId, userId.asString(), answer);
 
             Mockito.verify(gameRepository, Mockito.times(1))
                     .updateClarificationState(clarificationId, answer);
@@ -227,6 +235,32 @@ class GameManagerTests {
             // 問題と解答履歴を出す
             assertEquals(summary.getQuestion().getQuestionId(),
                     result.get().getQuestion().getQuestionId());
+        }
+
+        @Test
+        void testReactionNotByAuthor() {
+            Snowflake messageId = Snowflake.of(1);
+            String authorId = "2";
+            String nonAuthorId = "3";
+            int clarificationId = 4;
+            Question question = new Question.Builder()
+                    .authorId(authorId)
+                    .build();
+            Clarification clarification = new Clarification.Builder()
+                    .clarificationId(clarificationId)
+                    .build();
+            Mockito.doReturn(List.of(clarification)).when(gameRepository)
+                    .findClarification(ArgumentMatchers.any());
+            Mockito.doReturn(1).when(gameRepository)
+                    .updateClarificationState(clarificationId, ClarificationState.NO);
+            Mockito.doReturn(List.of(question)).when(gameRepository)
+                    .findQuestion(ArgumentMatchers.any());
+            GameManager manager = new GameManager(gameRepository);
+
+            manager.answerClarification(messageId, nonAuthorId, ClarificationState.NO);
+
+            Mockito.verify(gameRepository, Mockito.times(0))
+                    .updateClarificationState(ArgumentMatchers.anyInt(), ArgumentMatchers.any());
         }
     }
 }

@@ -7,8 +7,10 @@ import com.inorista.situationpuzzle.domain.GameSummary;
 import com.inorista.situationpuzzle.domain.Guess;
 import com.inorista.situationpuzzle.domain.GuessSelector;
 import com.inorista.situationpuzzle.domain.Question;
+import com.inorista.situationpuzzle.domain.QuestionSelector;
 import com.inorista.situationpuzzle.repository.GameRepository;
 import discord4j.common.util.Snowflake;
+import discord4j.core.object.entity.Message;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -70,13 +72,21 @@ public class GameManager {
         questionRepository.addClarification(clarification);
     }
 
-    public void answerClarification(Snowflake messageId, ClarificationState answer) {
+    public void answerClarification(Snowflake messageId, String reactionUserId, ClarificationState answer) {
         ClarificationSelector selector = new ClarificationSelector();
         selector.setMessageId(messageId.asString());
-        List<Clarification> clarifications = questionRepository.findClarification(selector);
-        if (!clarifications.isEmpty()) {
-            questionRepository.updateClarificationState(clarifications.get(0).getClarificationId(),
-                    answer);
+        Optional<Clarification> clarification = questionRepository.findClarification(selector).stream().findFirst();
+
+        if (clarification.isPresent()) {
+            Optional<String> questionAuthorId = questionRepository
+                    .findQuestion(QuestionSelector.byQuestionId(clarification.get().getQuestionId()))
+                    .stream()
+                    .findFirst()
+                    .map(Question::getAuthorId);
+            if (questionAuthorId.isPresent() && questionAuthorId.get().equals(reactionUserId)) {
+                questionRepository.updateClarificationState(clarification.get().getClarificationId(),
+                        answer);
+            }
         }
     }
 
