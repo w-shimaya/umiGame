@@ -19,7 +19,7 @@ public class StartQuestionCommandListener extends SlashCommandListener implement
     private final Logger logger = LoggerFactory.getLogger(StartQuestionCommandListener.class);
 
     public StartQuestionCommandListener(GameManager gameManager) {
-        super(gameManager, "q");
+        super(gameManager, "umigame");
     }
 
     @Override
