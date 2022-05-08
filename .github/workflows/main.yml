@@ -31,6 +31,7 @@ jobs:
       SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/umigamedb?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: testuser
       SPRING_DATASOURCE_PASSWORD: testuser_pass
+      SERVER_HOSTNAME: localhost
       USERNAME: ${{ secrets.DEPLOY_USERNAME }}
       HOSTNAME: ${{ secrets.DEPLOY_HOSTNAME }}
       PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
