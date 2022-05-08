@@ -36,6 +36,11 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
+    public List<Question> findQuestion(QuestionSelector selector) {
+        return sqlSession.getMapper(QuestionMapper.class).findQuestion(selector);
+    }
+
+    @Override
     public List<Clarification> findClarification(ClarificationSelector selector) {
         return sqlSession.getMapper(QuestionMapper.class).findClarification(selector);
     }

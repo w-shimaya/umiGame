@@ -53,10 +53,10 @@ public class ReactionListener implements EventListener<ReactionAddEvent> {
         ReactionEmoji.Unicode emoji = event.getEmoji().asUnicodeEmoji()
                 .orElse(ReactionEmoji.Unicode.unicode("a"));
         if (emoji.equals(AvailableEmoji.CROSS.getReactionEmoji())) {
-            gameManager.answerClarification(event.getMessageId(), ClarificationState.NO);
+            gameManager.answerClarification(event.getMessageId(), event.getUserId().asString(), ClarificationState.NO);
             gameManager.answerGuess(event.getMessageId().asString(), false);
         } else if (emoji.equals(AvailableEmoji.CIRCLE.getReactionEmoji())) {
-            gameManager.answerClarification(event.getMessageId(), ClarificationState.YES);
+            gameManager.answerClarification(event.getMessageId(), event.getUserId().asString(), ClarificationState.YES);
             List<Guess> answeredGuess = gameManager
                     .answerGuess(event.getMessageId().asString(), true);
             if (!answeredGuess.isEmpty()) {

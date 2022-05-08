@@ -94,7 +94,7 @@
     <select id="findClarification" resultMap="Clarification">
         SELECT question_id, clarification_id, channel_id, m.message_id as message_id,
                content, state, user_name, m.author_id as user_id, created_at
-        FROM clarification
+        FROM clarification c
           INNER JOIN message m USING(message_id)
           INNER JOIN participant u ON m.author_id = u.user_id
         <where>
