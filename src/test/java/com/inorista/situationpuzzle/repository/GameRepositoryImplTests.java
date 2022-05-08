@@ -79,6 +79,7 @@ public class GameRepositoryImplTests {
                 .build();
         int updatedCount = gameRepository.addQuestion(question);
         assertEquals(1, updatedCount);
+        assertTrue(question.getQuestionId() > 0);
     }
 
     @Test

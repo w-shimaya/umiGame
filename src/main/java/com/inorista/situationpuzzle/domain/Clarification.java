@@ -8,7 +8,6 @@ import java.time.format.FormatStyle;
 import java.util.Locale;
 
 public class Clarification extends MessageCache implements ViewTableRow {
-    private Question question;
     private int questionId;
     private int clarificationId;
     private String content;

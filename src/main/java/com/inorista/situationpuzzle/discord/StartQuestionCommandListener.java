@@ -6,11 +6,15 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 public class StartQuestionCommandListener extends SlashCommandListener implements MessageListener {
+
+    @Value("${server.hostname}")
+    private String hostname;
 
     private final Logger logger = LoggerFactory.getLogger(StartQuestionCommandListener.class);
 
@@ -33,19 +37,24 @@ public class StartQuestionCommandListener extends SlashCommandListener implement
 
     private Mono<Message> startQuestion(Message message) {
         Question question = Question.fromMessage(message);
-        logger.info("Question added: " + question.toString());
 
         try {
             if (gameManager.startWith(question) != 1) {
                 logger.error("Failed to start game with question " + question.toString());
                 return Mono.just(message);
             }
+            logger.info("Question added: " + question.toString());
+
+            message.getChannel().flatMap(channel -> channel.createMessage("スタート:turtle:\nhttp://"
+                            + hostname
+                            + "/result/list?questionId="
+                            + question.getQuestionId()))
+                    .subscribe();
+            return Mono.empty();
         } catch (Exception e) {
             e.printStackTrace();
             return Mono.just(message);
         }
-
-        return Mono.empty();
     }
 
     private Mono<Void> handleError(Message message) {
