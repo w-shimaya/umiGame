@@ -80,7 +80,7 @@
           VALUES(#{messageId}, #{channelId}, #{authorId}, #{createdAt})
     </insert>
 
-    <insert id="insertQuestion">
+    <insert id="insertQuestion" useGeneratedKeys="true" keyProperty="questionId">
         INSERT INTO question(message_id, statement)
           VALUES (#{messageId}, #{statement})
     </insert>
