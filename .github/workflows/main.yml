@@ -11,7 +11,26 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    services:
+      db:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: umigamedb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testuser_pass
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    env:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/umigamedb?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testuser_pass
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 18
