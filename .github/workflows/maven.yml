@@ -22,6 +22,7 @@ jobs:
           MYSQL_DATABASE: umigamedb
           MYSQL_USER: testuser
           MYSQL_PASSWORD: testuser_pass
+          SERVER_HOSTNAME: localhost
         options: >-
           --health-cmd "mysqladmin ping"
           --health-interval 10s
