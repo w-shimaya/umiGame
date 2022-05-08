@@ -29,7 +29,7 @@ public class ClarificationMessageListener implements MessageListener, EventListe
                 .map(MessageCreateEvent::getMessage)
                 .filter(message -> !message.getContent().startsWith("/")) // ignore commands
                 .filter(message -> message.getAuthor().map(user -> !user.isBot())
-                        .orElse(false))
+                        .orElse(false)) // ignore bots
                 .filter(message -> gameManager.isGameRunning(message.getChannelId().asString()))
                 .flatMap(this::processCommand)
                 .then();
