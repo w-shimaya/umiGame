@@ -101,9 +101,21 @@ public class GameRepositoryImplTests {
     }
 
     @Test
-    @Disabled
+    @DatabaseSetup("/testdata/initdata.xml")
+    @ExpectedDatabase(value = "/testdata/afterAddClarificationNewUser.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     void testAddClarificationByNewUser() {
-        fail();
+        Clarification clarification = new Clarification.Builder()
+                .questionId(1)
+                .channelId("10")
+                .messageId("120")
+                .authorId("1004")
+                .authorName("ユーザー5")
+                .content("新キャラの質問")
+                .createdAt(LocalDateTime.of(2022, 5, 5, 11, 11, 11))
+                .state(ClarificationState.AWAIT)
+                .build();
+        int updatedCount = gameRepository.addClarification(clarification);
     }
 
     @Test

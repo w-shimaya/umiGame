@@ -75,6 +75,7 @@ public class Clarification extends MessageCache implements ViewTableRow {
             throw new RuntimeException();
         }
         clarification.setAuthorId(message.getAuthor().get().getId().asString());
+        clarification.setAuthorName(message.getAuthor().get().getUsername());
         clarification.content = message.getContent();
         clarification.state = ClarificationState.AWAIT;
         clarification.createdAt = LocalDateTime.ofInstant(message.getTimestamp(),

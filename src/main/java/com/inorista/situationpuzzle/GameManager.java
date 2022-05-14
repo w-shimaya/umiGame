@@ -10,7 +10,6 @@ import com.inorista.situationpuzzle.domain.Question;
 import com.inorista.situationpuzzle.domain.QuestionSelector;
 import com.inorista.situationpuzzle.repository.GameRepository;
 import discord4j.common.util.Snowflake;
-import discord4j.core.object.entity.Message;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
