@@ -12,7 +12,8 @@ public class Question extends MessageCache {
 
     public static Question fromMessage(Message message) {
         Question question = new Question();
-        question.statement = message.getContent().substring("/q ".length());
+        int idxSpace = message.getContent().indexOf(" ");
+        question.statement = message.getContent().substring(idxSpace + 1);
         question.channelId = message.getChannelId().asString();
         question.messageId = message.getId().asString();
         if (message.getAuthor().isPresent()) {
