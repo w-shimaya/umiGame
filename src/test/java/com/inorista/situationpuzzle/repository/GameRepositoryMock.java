@@ -90,11 +90,6 @@ public class GameRepositoryMock implements GameRepository {
     }
 
     @Override
-    public Optional<GameSummary> getGameSummary(int questionId) {
-        return Optional.empty();
-    }
-
-    @Override
     public int addClarification(Clarification clarification) {
         clarifications.add(clarification);
         return 1;

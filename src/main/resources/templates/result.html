@@ -8,23 +8,48 @@
     <title>Result</title>
 </head>
 <body>
-<div class="container">
-    <h1 th:text="${question.getStatement()}"></h1>
-    <p>by [[${question.getAuthorName()}]]</p>
+<div class="container sticky-top">
+    <h1 th:text="${question.statement}">問題文</h1>
+    <p>by [[${question.authorName}]]</p>
 </div>
-<table class="table container">
-    <tr>
-        <th>質問</th>
-        <th>by</th>
-        <th>時刻</th>
-        <th>答え</th>
-    </tr>
-    <tr th:each="message : ${history}" th:classappend="${message.getRowCsvClass()}">
-        <td th:text="${message.getContent()}"></td>
-        <td th:text="${message.getAuthorName()}"></td>
-        <td th:text="${message.getTime()}"></td>
-        <td th:text="${message.getStatus()}"></td>
-    </tr>
-</table>
+<form class="container" method="get" action="result.html" th:action="@{/result/list}"
+      th:object="${filterForm}">
+    <input type="hidden" name="questionId" th:value="${question.questionId}">
+    <table class="table container">
+        <tr>
+            <td class="col-6"></td>
+            <td class="col-6" colspan="3">
+                <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="checkYes" class="form-check-input"
+                           th:field="*{includeYes}">
+                    <label for="checkYes" class="form-check-label">YES</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="checkNo" class="form-check-input"
+                           th:field="*{includeNo}">
+                    <label for="checkNo">NO</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="checkAwait" class="form-check-input"
+                           th:field="*{includeAwait}">
+                    <label for="checkAwait">未回答</label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>質問</th>
+            <th>答え</th>
+            <th>by</th>
+            <th>時刻</th>
+        </tr>
+        <tr th:each="message : ${history}" th:classappend="${message.getRowCsvClass()}">
+            <td class="col-6" th:text="${message.getContent()}">ｘｘｘですか？</td>
+            <td class="col-1" th:text="${message.getStatus()}">YES</td>
+            <td class="col-1" th:text="${message.getAuthorName()}">ユーザ１</td>
+            <td class="col-2" th:text="${message.getTime()}">yyyy-mm-dd hh:mm:ss</td>
+        </tr>
+    </table>
+</form>
 </body>
 </html>

@@ -6,13 +6,19 @@ import com.inorista.situationpuzzle.domain.ClarificationState;
 import com.inorista.situationpuzzle.domain.GameSummary;
 import com.inorista.situationpuzzle.domain.Guess;
 import com.inorista.situationpuzzle.domain.GuessSelector;
+import com.inorista.situationpuzzle.domain.GuessState;
+import com.inorista.situationpuzzle.domain.MessageCache;
 import com.inorista.situationpuzzle.domain.Question;
 import com.inorista.situationpuzzle.domain.QuestionSelector;
 import com.inorista.situationpuzzle.repository.GameRepository;
 import discord4j.common.util.Snowflake;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.stereotype.Service;
+import reactor.util.annotation.Nullable;
 
 @Service
 public class GameManager {
@@ -89,7 +95,31 @@ public class GameManager {
         }
     }
 
-    public Optional<GameSummary> getGameSummary(int questionId) {
-        return questionRepository.getGameSummary(questionId);
+    public Optional<GameSummary> getGameSummary(
+            int questionId,
+            List<ClarificationState> includeClarifications,
+            List<GuessState> includeGuesses) {
+        GameSummary summary = new GameSummary();
+        List<Question> questions = questionRepository.findQuestion(QuestionSelector.byQuestionId(questionId));
+        if (questions.isEmpty()) {
+            return Optional.empty();
+        }
+
+        summary.setQuestion(questions.get(0));
+
+        List<Clarification> clarifications =
+                questionRepository.findClarification(ClarificationSelector.byQuestionId(questionId));
+        List<Guess> guess = questionRepository.findGuess(GuessSelector.byQuestionId(questionId));
+
+        List<MessageCache> history = new ArrayList<>();
+        history.addAll(clarifications.stream()
+                .filter(c -> includeClarifications.contains(c.getState()))
+                .collect(Collectors.toList()));
+        history.addAll(guess.stream()
+                .filter(g -> includeGuesses.contains(g.getState()))
+                .collect(Collectors.toList()));
+        history.sort((m1, m2) -> -m1.getCreatedAt().compareTo(m2.getCreatedAt()));
+        summary.setHistory(history);
+        return Optional.of(summary);
     }
 }

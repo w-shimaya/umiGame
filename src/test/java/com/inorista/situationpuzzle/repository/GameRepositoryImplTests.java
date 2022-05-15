@@ -212,7 +212,7 @@ public class GameRepositoryImplTests {
 
         gameRepository.updateQuestion(question);
     }
-
+    /*
     @Test
     @DatabaseSetup("/testdata/initdata.xml")
     void testGetGameSummary() {
@@ -225,5 +225,8 @@ public class GameRepositoryImplTests {
         MessageCache front = summary.get().getHistory().get(0);
         MessageCache next = summary.get().getHistory().get(1);
         assertTrue(front.getCreatedAt().isAfter(next.getCreatedAt()));
+
     }
+     */
+
 }
