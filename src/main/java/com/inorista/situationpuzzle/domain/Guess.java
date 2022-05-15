@@ -71,6 +71,14 @@ public class Guess extends MessageCache implements ViewTableRow {
         }
     }
 
+    public GuessState getState() {
+        if (isAnswered) {
+            return isCorrect ? GuessState.CORRECT : GuessState.WRONG;
+        } else {
+            return GuessState.AWAIT;
+        }
+    }
+
     public void setContent(String content) {
         this.content = content;
     }

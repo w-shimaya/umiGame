@@ -119,26 +119,4 @@ public class GameRepositoryImpl implements GameRepository {
     public List<Guess> findGuess(GuessSelector selector) {
         return sqlSession.getMapper(QuestionMapper.class).findGuess(selector);
     }
-
-    @Override
-    public Optional<GameSummary> getGameSummary(int questionId) {
-        GameSummary summary = new GameSummary();
-        QuestionMapper mapper = sqlSession.getMapper(QuestionMapper.class);
-        List<Question> questions = mapper.findQuestion(QuestionSelector.byQuestionId(questionId));
-        if (questions.isEmpty()) {
-            return Optional.empty();
-        }
-        // questions.size() must be 1
-        summary.setQuestion(questions.get(0));
-
-        List<Clarification> clarifications = mapper.findClarification(ClarificationSelector.byQuestionId(questionId));
-        List<Guess> guesses = mapper.findGuess(GuessSelector.byQuestionId(questionId));
-
-        List<MessageCache> history = new ArrayList<>();
-        history.addAll(clarifications);
-        history.addAll(guesses);
-        history.sort((m1, m2) -> - m1.getCreatedAt().compareTo(m2.getCreatedAt()));
-        summary.setHistory(history);
-        return Optional.of(summary);
-    }
 }

@@ -1,15 +1,22 @@
 package com.inorista.situationpuzzle;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.*;
 import com.inorista.situationpuzzle.domain.Clarification;
+import com.inorista.situationpuzzle.domain.ClarificationSelector;
 import com.inorista.situationpuzzle.domain.ClarificationState;
 import com.inorista.situationpuzzle.domain.GameSummary;
 import com.inorista.situationpuzzle.domain.Guess;
+import com.inorista.situationpuzzle.domain.GuessSelector;
+import com.inorista.situationpuzzle.domain.GuessState;
 import com.inorista.situationpuzzle.domain.MessageCache;
 import com.inorista.situationpuzzle.domain.Question;
+import com.inorista.situationpuzzle.domain.QuestionSelector;
 import com.inorista.situationpuzzle.repository.GameRepository;
 import com.inorista.situationpuzzle.repository.GameRepositoryMock;
 import discord4j.common.util.Snowflake;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +27,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.exceptions.verification.SmartNullPointerException;
+import org.springframework.cglib.core.Local;
 
 
 class GameManagerTests {
@@ -222,19 +231,59 @@ class GameManagerTests {
         @Test
         void testGetSummary() {
             int questionId = 1;
-            GameSummary summary = new GameSummary();
-            summary.setQuestion(new Question());
-            summary.getQuestion().setQuestionId(questionId);
+            Question question = new Question();
+            question.setQuestionId(1);
+            List<Clarification> clarifications = List.of(new Clarification());
+            clarifications.get(0).setCreatedAt(LocalDateTime.now());
+            clarifications.get(0).setState(ClarificationState.AWAIT);
+            List<Guess> guesses = List.of(new Guess());
+            guesses.get(0).setCreatedAt(LocalDateTime.now().plusSeconds(1L));
             // mock
-            Mockito.doReturn(Optional.of(summary)).when(gameRepository)
-                    .getGameSummary(questionId);
+            Mockito.doReturn(List.of(question)).when(gameRepository)
+                    .findQuestion(Mockito.any(QuestionSelector.class));
+            Mockito.doReturn(clarifications).when(gameRepository)
+                    .findClarification(Mockito.any(ClarificationSelector.class));
+            Mockito.doReturn(guesses).when(gameRepository)
+                    .findGuess(Mockito.any(GuessSelector.class));
 
             GameManager manager = new GameManager(gameRepository);
-            Optional<GameSummary> result = manager.getGameSummary(questionId);
+            Optional<GameSummary> result = manager.getGameSummary(questionId,
+                    List.of(ClarificationState.AWAIT, ClarificationState.YES, ClarificationState.NO),
+                    List.of(GuessState.AWAIT, GuessState.CORRECT, GuessState.WRONG));
 
             // 問題と解答履歴を出す
-            assertEquals(summary.getQuestion().getQuestionId(),
-                    result.get().getQuestion().getQuestionId());
+            assertTrue(result.isPresent());
+            assertEquals(question, result.get().getQuestion());
+            assertThat(result.get().getHistory(), contains(guesses.get(0),
+                    clarifications.get(0)));
+        }
+
+        @Test
+        void testGetSummaryFiltered() {
+            int questionId = 1;
+            Question question = new Question();
+            question.setQuestionId(questionId);
+            List<Clarification> clarifications = List.of(new Clarification());
+            clarifications.get(0).setCreatedAt(LocalDateTime.now());
+            clarifications.get(0).setState(ClarificationState.AWAIT);
+            List<Guess> guesses = List.of(new Guess());
+            guesses.get(0).setCreatedAt(LocalDateTime.now().plusSeconds(1L));
+            // mock
+            Mockito.doReturn(List.of(question)).when(gameRepository)
+                    .findQuestion(Mockito.any(QuestionSelector.class));
+            Mockito.doReturn(clarifications).when(gameRepository)
+                    .findClarification(Mockito.any(ClarificationSelector.class));
+            Mockito.doReturn(guesses).when(gameRepository)
+                    .findGuess(Mockito.any(GuessSelector.class));
+
+            GameManager manager = new GameManager(gameRepository);
+            Optional<GameSummary> summary = manager.getGameSummary(questionId,
+                    Arrays.asList(ClarificationState.NO, ClarificationState.YES),
+                    Arrays.asList(GuessState.WRONG, GuessState.CORRECT));
+
+            assertTrue(summary.isPresent());
+            assertEquals(question, summary.get().getQuestion());
+            assertTrue(summary.get().getHistory().isEmpty());
         }
 
         @Test

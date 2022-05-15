@@ -26,5 +26,4 @@ public interface GameRepository {
     int updateGuess(int guessId, boolean isCorrect);
     MessageCache findMessage(String messageId);
     List<Guess> findGuess(GuessSelector selector);
-    Optional<GameSummary> getGameSummary(int questionId);
 }

@@ -48,7 +48,8 @@ public class StartQuestionCommandListener extends SlashCommandListener implement
             message.getChannel().flatMap(channel -> channel.createMessage("スタート:turtle:\nhttp://"
                             + hostname
                             + "/result/list?questionId="
-                            + question.getQuestionId()))
+                            + question.getQuestionId()
+                            + "&includeYes=on&includeNo=on"))
                     .subscribe();
             return Mono.empty();
         } catch (Exception e) {
