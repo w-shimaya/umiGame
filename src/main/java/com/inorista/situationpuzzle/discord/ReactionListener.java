@@ -2,16 +2,13 @@ package com.inorista.situationpuzzle.discord;
 
 import com.inorista.situationpuzzle.GameManager;
 import com.inorista.situationpuzzle.domain.AvailableEmoji;
-import com.inorista.situationpuzzle.domain.Clarification;
 import com.inorista.situationpuzzle.domain.ClarificationState;
 import com.inorista.situationpuzzle.domain.Guess;
 import com.inorista.situationpuzzle.domain.Question;
 import discord4j.core.event.domain.message.ReactionAddEvent;
-import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.reaction.ReactionEmoji;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -49,23 +46,39 @@ public class ReactionListener implements EventListener<ReactionAddEvent> {
     }
 
     private Mono<Void> processCommand(ReactionAddEvent event) {
-        // a は x/o じゃなければ何でもいい
-        ReactionEmoji.Unicode emoji = event.getEmoji().asUnicodeEmoji()
-                .orElse(ReactionEmoji.Unicode.unicode("a"));
-        if (emoji.equals(AvailableEmoji.CROSS.getReactionEmoji())) {
-            gameManager.answerClarification(event.getMessageId(), event.getUserId().asString(), ClarificationState.NO);
-            gameManager.answerGuess(event.getMessageId().asString(), false);
-        } else if (emoji.equals(AvailableEmoji.CIRCLE.getReactionEmoji())) {
-            gameManager.answerClarification(event.getMessageId(), event.getUserId().asString(), ClarificationState.YES);
-            List<Guess> answeredGuess = gameManager
-                    .answerGuess(event.getMessageId().asString(), true);
-            if (!answeredGuess.isEmpty()) {
-                event.getChannel().flatMap(ch -> ch.createMessage(answeredGuess.get(0).getAuthor().getUserName()
-                                + "さんに10FP!"))
-                        .subscribe();
-            }
-
+        AvailableEmoji emoji = AvailableEmoji.getByRaw(
+                event.getEmoji().asUnicodeEmoji()
+                        .map(ReactionEmoji.Unicode::getRaw)
+                        .orElse(""));
+        if (emoji == null) {
+            return Mono.empty();
         }
+
+        switch (emoji) {
+            case CROSS -> {
+                gameManager.answerClarification(event.getMessageId(),
+                        event.getUserId().asString(),
+                        ClarificationState.NO);
+                gameManager.answerGuess(event.getMessageId().asString(), false);
+
+            }
+            case CIRCLE -> {
+                gameManager.answerClarification(event.getMessageId(),
+                        event.getUserId().asString(),
+                        ClarificationState.YES);
+                List<Guess> answeredGuess = gameManager
+                        .answerGuess(event.getMessageId().asString(), true);
+                if (!answeredGuess.isEmpty()) {
+                    event.getChannel().flatMap(ch -> ch.createMessage(answeredGuess.get(0).getAuthor().getUserName()
+                                    + "さんに10FP!"))
+                            .subscribe();
+                }
+            }
+            case PROHIBITED -> gameManager.answerClarification(event.getMessageId(),
+                    event.getUserId().asString(),
+                    ClarificationState.VAGUE);
+        }
+
         return Mono.empty();
     }
 }

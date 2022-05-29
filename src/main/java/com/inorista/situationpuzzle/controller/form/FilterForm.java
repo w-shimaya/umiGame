@@ -6,6 +6,7 @@ public class FilterForm implements Serializable {
     private boolean includeYes;
     private boolean includeNo;
     private boolean includeAwait;
+    private boolean includeVague;
 
     public boolean isIncludeYes() {
         return includeYes;
@@ -29,5 +30,13 @@ public class FilterForm implements Serializable {
 
     public void setIncludeAwait(boolean includeAwait) {
         this.includeAwait = includeAwait;
+    }
+
+    public boolean isIncludeVague() {
+        return includeVague;
+    }
+
+    public void setIncludeVague(boolean includeVague) {
+        this.includeVague = includeVague;
     }
 }

@@ -34,4 +34,10 @@ public class ClarificationSelector {
         selector.setQuestionId(questionId);
         return selector;
     }
+
+    public static ClarificationSelector byMessageId(String messageId) {
+        ClarificationSelector selector = new ClarificationSelector();
+        selector.setMessageId(messageId);
+        return selector;
+    }
 }
