@@ -1,21 +1,29 @@
 package com.inorista.situationpuzzle.domain;
 
-import discord4j.common.util.Snowflake;
-
+/**
+ * Selector class for question.
+ */
 public class QuestionSelector {
-    private String channelId;
-    private int questionId;
 
-    public QuestionSelector() {
-    }
+  private String channelId;
+  private int questionId;
 
-    public QuestionSelector(String channelId) {
-        this.channelId = channelId;
-    }
+  public QuestionSelector() {
+  }
 
-    public static QuestionSelector byQuestionId(int questionId) {
-        QuestionSelector selector = new QuestionSelector();
-        selector.questionId = questionId;
-        return selector;
-    }
+  public QuestionSelector(String channelId) {
+    this.channelId = channelId;
+  }
+
+  /**
+   * Selector by question ID.
+   *
+   * @param questionId question ID to find
+   * @return selector object
+   */
+  public static QuestionSelector byQuestionId(int questionId) {
+    QuestionSelector selector = new QuestionSelector();
+    selector.questionId = questionId;
+    return selector;
+  }
 }

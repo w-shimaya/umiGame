@@ -15,49 +15,61 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * View controller. (To be separated)
+ */
 @Controller
 @RequestMapping("/result")
 public class ResultController {
-    private final GameManager gameManager;
 
-    public ResultController(GameManager gameManager) {
-        this.gameManager = gameManager;
+  private final GameManager gameManager;
+
+  public ResultController(GameManager gameManager) {
+    this.gameManager = gameManager;
+  }
+
+  /**
+   * GET /resutl/list?questionId=?&includeYes=?_includeYes=?&...
+   *
+   * @param questionId TODO: this should be path param
+   * @param filterForm filter
+   * @param model      model
+   * @return result page view
+   */
+  @GetMapping("/list")
+  public String resultList(
+      @RequestParam("questionId") String questionId,
+      @Validated FilterForm filterForm,
+      Model model) {
+    List<ClarificationState> clarificationFilter = new ArrayList<>();
+    List<GuessState> guessFilter = new ArrayList<>();
+
+    if (filterForm.isIncludeYes()) {
+      clarificationFilter.add(ClarificationState.YES);
+      guessFilter.add(GuessState.CORRECT);
+    }
+    if (filterForm.isIncludeNo()) {
+      clarificationFilter.add(ClarificationState.NO);
+      guessFilter.add(GuessState.WRONG);
+    }
+    if (filterForm.isIncludeAwait()) {
+      clarificationFilter.add(ClarificationState.AWAIT);
+      guessFilter.add(GuessState.AWAIT);
+    }
+    if (filterForm.isIncludeVague()) {
+      clarificationFilter.add(ClarificationState.VAGUE);
     }
 
-    @GetMapping("/list")
-    public String resultList(
-            @RequestParam("questionId") String questionId,
-            @Validated FilterForm filterForm,
-            Model model) {
-        List<ClarificationState> clarificationFilter = new ArrayList<>();
-        List<GuessState> guessFilter = new ArrayList<>();
+    model.addAttribute("filterForm", filterForm);
 
-        if (filterForm.isIncludeYes()) {
-            clarificationFilter.add(ClarificationState.YES);
-            guessFilter.add(GuessState.CORRECT);
-        }
-        if (filterForm.isIncludeNo()) {
-            clarificationFilter.add(ClarificationState.NO);
-            guessFilter.add(GuessState.WRONG);
-        }
-        if (filterForm.isIncludeAwait()) {
-            clarificationFilter.add(ClarificationState.AWAIT);
-            guessFilter.add(GuessState.AWAIT);
-        }
-        if (filterForm.isIncludeVague()) {
-            clarificationFilter.add(ClarificationState.VAGUE);
-        }
-        
-        model.addAttribute("filterForm", filterForm);
-
-        Optional<GameSummary> summary = gameManager.getGameSummary(
-                Integer.parseInt(questionId),
-                clarificationFilter,
-                guessFilter);
-        summary.ifPresent(s -> {
-            model.addAttribute("question", s.getQuestion());
-            model.addAttribute("history", s.getHistory());
-        });
-        return "result";
-    }
+    Optional<GameSummary> summary = gameManager.getGameSummary(
+        Integer.parseInt(questionId),
+        clarificationFilter,
+        guessFilter);
+    summary.ifPresent(s -> {
+      model.addAttribute("question", s.getQuestion());
+      model.addAttribute("history", s.getHistory());
+    });
+    return "result";
+  }
 }

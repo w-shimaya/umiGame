@@ -2,58 +2,62 @@ package com.inorista.situationpuzzle.domain;
 
 import java.time.LocalDateTime;
 
+/**
+ * Message domain.
+ */
 public class MessageCache {
-    protected String channelId;
-    protected String messageId;
-    protected User author;
-    protected LocalDateTime createdAt;
 
-    public String getMessageId() {
-        return messageId;
-    }
+  protected String channelId;
+  protected String messageId;
+  protected User author;
+  protected LocalDateTime createdAt;
 
-    public String getAuthorId() {
-        return author.getUserId();
-    }
+  public String getMessageId() {
+    return messageId;
+  }
 
-    public void setAuthorId(String authorId) {
-        this.author.setUserId(authorId);
-    }
+  public String getAuthorId() {
+    return author.getUserId();
+  }
 
-    public void setAuthorName(String name) {
-        this.author.setUserName(name);
-    }
+  public void setAuthorId(String authorId) {
+    this.author.setUserId(authorId);
+  }
 
-    public String getAuthorName() {
-        return this.author.getUserName();
-    }
+  public void setAuthorName(String name) {
+    this.author.setUserName(name);
+  }
 
-    public String getChannelId() {
-        return channelId;
-    }
+  public String getAuthorName() {
+    return this.author.getUserName();
+  }
 
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
-    }
+  public String getChannelId() {
+    return channelId;
+  }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+  public void setChannelId(String channelId) {
+    this.channelId = channelId;
+  }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
+  }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 
-    public User getAuthor() {
-        return author;
-    }
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public void setAuthor(User author) {
-        this.author = author;
-    }
+  public User getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(User author) {
+    this.author = author;
+  }
 
 }

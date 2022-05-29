@@ -1,13 +1,17 @@
 package com.inorista.situationpuzzle.domain;
 
+/**
+ * Define properties used in view.
+ */
 public interface ViewTableRow {
-    String getContent();
 
-    String getAuthorName();
+  String getContent();
 
-    String getTime();
+  String getAuthorName();
 
-    String getStatus();
+  String getTime();
 
-    String getRowCsvClass();
+  String getStatus();
+
+  String getRowCsvClass();
 }

@@ -2,7 +2,6 @@ package com.inorista.situationpuzzle.repository.mybatis;
 
 import com.inorista.situationpuzzle.domain.Clarification;
 import com.inorista.situationpuzzle.domain.ClarificationSelector;
-import com.inorista.situationpuzzle.domain.GameSummary;
 import com.inorista.situationpuzzle.domain.Guess;
 import com.inorista.situationpuzzle.domain.GuessSelector;
 import com.inorista.situationpuzzle.domain.MessageCache;
@@ -15,30 +14,35 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import reactor.util.annotation.Nullable;
 
+/**
+ * Mapper interface.
+ * TODO: separate
+ */
 @Mapper
 public interface QuestionMapper {
-    List<Question> findQuestion(@Nullable QuestionSelector selector);
 
-    int insertMessage(MessageCache message);
+  List<Question> findQuestion(@Nullable QuestionSelector selector);
 
-    int insertQuestion(Question question);
+  int insertMessage(MessageCache message);
 
-    int updateQuestionState(Question question);
+  int insertQuestion(Question question);
 
-    int insertClarification(Clarification clarification);
+  int updateQuestionState(Question question);
 
-    Optional<User> findUser(UserSelector selector);
+  int insertClarification(Clarification clarification);
 
-    List<Clarification> findClarification(ClarificationSelector selector);
+  Optional<User> findUser(UserSelector selector);
 
-    int updateClarificationState(Clarification clarification);
+  List<Clarification> findClarification(ClarificationSelector selector);
 
-    int insertUser(User user);
+  int updateClarificationState(Clarification clarification);
 
-    int insertGuess(Guess guess);
+  int insertUser(User user);
 
-    int updateGuess(int guessId, boolean isCorrect);
+  int insertGuess(Guess guess);
 
-    List<Guess> findGuess(GuessSelector selector);
+  int updateGuess(int guessId, boolean isCorrect);
+
+  List<Guess> findGuess(GuessSelector selector);
 
 }

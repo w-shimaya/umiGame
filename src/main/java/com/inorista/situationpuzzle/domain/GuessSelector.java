@@ -1,43 +1,59 @@
 package com.inorista.situationpuzzle.domain;
 
+/**
+ * Selector class for guess table.
+ */
 public class GuessSelector {
-    private String messageId;
-    private int guessId;
-    private int questionId;
 
-    public int getGuessId() {
-        return guessId;
-    }
+  private String messageId;
+  private int guessId;
+  private int questionId;
 
-    public void setGuessId(int guessId) {
-        this.guessId = guessId;
-    }
+  public int getGuessId() {
+    return guessId;
+  }
 
-    public String getMessageId() {
-        return messageId;
-    }
+  public void setGuessId(int guessId) {
+    this.guessId = guessId;
+  }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+  public String getMessageId() {
+    return messageId;
+  }
 
-    public int getQuestionId() {
-        return questionId;
-    }
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
+  }
 
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
-    }
+  public int getQuestionId() {
+    return questionId;
+  }
 
-    public static GuessSelector byQuestionId(int questionId) {
-        GuessSelector selector = new GuessSelector();
-        selector.setQuestionId(questionId);
-        return selector;
-    }
+  public void setQuestionId(int questionId) {
+    this.questionId = questionId;
+  }
 
-    public static GuessSelector byMessageId(String messageId) {
-        GuessSelector selector = new GuessSelector();
-        selector.setMessageId(messageId);
-        return selector;
-    }
+  /**
+   * Create selector object for finding guesses by questionId.
+   *
+   * @param questionId question ID
+   * @return selector object
+   */
+  public static GuessSelector byQuestionId(int questionId) {
+    GuessSelector selector = new GuessSelector();
+    selector.setQuestionId(questionId);
+    return selector;
+  }
+
+  /**
+   * Create selector object for finding a guess by messageId.
+   *
+   * @param messageId messageId
+   * @return selector object
+   */
+  public static GuessSelector byMessageId(String messageId) {
+    GuessSelector selector = new GuessSelector();
+    selector.setMessageId(messageId);
+    return selector;
+  }
 }

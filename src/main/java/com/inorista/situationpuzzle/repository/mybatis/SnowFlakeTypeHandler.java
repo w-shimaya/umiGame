@@ -8,25 +8,31 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+/**
+ * Type handler.
+ */
 public class SnowFlakeTypeHandler extends BaseTypeHandler<Snowflake> {
-    @Override
-    public void setNonNullParameter(PreparedStatement preparedStatement, int i, Snowflake snowflake, JdbcType jdbcType)
-            throws SQLException {
-        preparedStatement.setString(i, snowflake.toString());
-    }
 
-    @Override
-    public Snowflake getNullableResult(ResultSet resultSet, String s) throws SQLException {
-        return Snowflake.of(resultSet.getString(s));
-    }
+  @Override
+  public void setNonNullParameter(PreparedStatement preparedStatement, int i, Snowflake snowflake,
+      JdbcType jdbcType)
+      throws SQLException {
+    preparedStatement.setString(i, snowflake.toString());
+  }
 
-    @Override
-    public Snowflake getNullableResult(ResultSet resultSet, int i) throws SQLException {
-        return Snowflake.of(resultSet.getString(i));
-    }
+  @Override
+  public Snowflake getNullableResult(ResultSet resultSet, String s) throws SQLException {
+    return Snowflake.of(resultSet.getString(s));
+  }
 
-    @Override
-    public Snowflake getNullableResult(CallableStatement callableStatement, int i) throws SQLException {
-        return Snowflake.of(callableStatement.getString(i));
-    }
+  @Override
+  public Snowflake getNullableResult(ResultSet resultSet, int i) throws SQLException {
+    return Snowflake.of(resultSet.getString(i));
+  }
+
+  @Override
+  public Snowflake getNullableResult(CallableStatement callableStatement, int i)
+      throws SQLException {
+    return Snowflake.of(callableStatement.getString(i));
+  }
 }
