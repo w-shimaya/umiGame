@@ -34,4 +34,10 @@ public class GuessSelector {
         selector.setQuestionId(questionId);
         return selector;
     }
+
+    public static GuessSelector byMessageId(String messageId) {
+        GuessSelector selector = new GuessSelector();
+        selector.setMessageId(messageId);
+        return selector;
+    }
 }

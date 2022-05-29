@@ -46,6 +46,7 @@ public class Clarification extends MessageCache implements ViewTableRow {
             case YES -> "YES";
             case NO -> "NO";
             case AWAIT -> "未回答";
+            case VAGUE -> "回答不可";
         };
     }
 

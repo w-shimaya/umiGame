@@ -59,7 +59,8 @@ public class ControllerTests {
                         .param("questionId", "1")
                         .param("includeYes", "on")
                         .param("includeNo", "on")
-                        .param("includeAwait", "on"))
+                        .param("includeAwait", "on")
+                        .param("includeVague", "on"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(view().name("result"))
                 .andReturn();

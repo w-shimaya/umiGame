@@ -6,7 +6,6 @@ import com.inorista.situationpuzzle.domain.ClarificationState;
 import com.inorista.situationpuzzle.domain.GameSummary;
 import com.inorista.situationpuzzle.domain.GuessState;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
@@ -45,6 +44,10 @@ public class ResultController {
             clarificationFilter.add(ClarificationState.AWAIT);
             guessFilter.add(GuessState.AWAIT);
         }
+        if (filterForm.isIncludeVague()) {
+            clarificationFilter.add(ClarificationState.VAGUE);
+        }
+        
         model.addAttribute("filterForm", filterForm);
 
         Optional<GameSummary> summary = gameManager.getGameSummary(

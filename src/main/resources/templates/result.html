@@ -31,6 +31,11 @@
                     <label for="checkNo">NO</label>
                 </div>
                 <div class="form-check form-check-inline">
+                    <input type="checkbox" id="checkVague" class="form-check-input"
+                           th:field="*{includeVague}">
+                    <label for="checkVague">回答不可</label>
+                </div>
+                <div class="form-check form-check-inline">
                     <input type="checkbox" id="checkAwait" class="form-check-input"
                            th:field="*{includeAwait}">
                     <label for="checkAwait">未回答</label>
